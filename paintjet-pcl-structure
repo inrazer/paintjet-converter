@@ -1,0 +1,98 @@
+## Deeper into PCL
+
+Beeing a language developed by HP and documented well (just search the web) I took the trip down into.
+It is based on the concept of ESC-sequences, like ESC/P from Epson is.
+
+So direct to the core.
+
+My SA uses the raster graphic mode. This means every line of the printed picture beeing represented by a
+predefined number of pixels.
+
+Taking a look at the actual PCL-data, I were able to capture from serial to file with another
+python script paired with a parallel-to-serial converting arduino, we will see how PCL is build up.
+
+## Part 1/4
+First part of the head data
+----------------------------------------------------------------------------  
+| ESC&a900H | position coursor at hor. pos. of 900 Decapionts              |  
+|-----------+--------------------------------------------------------------|  
+| ESC*t180R | graph. resoluton shall be 180 dpi                            |  
+|-----------+--------------------------------------------------------------|  
+| ESC*r3U   | the used colour palette (we're interesed in)                 |  
+|-----------+--------------------------------------------------------------|  
+| ESC*r1A   | begin raster lines at actual position (left raster border)   |  
+|-----------+--------------------------------------------------------------|  
+| ESC*r1024S | raster width shall be 1024px [every line shall have 1024px] |  
+|-----------+--------------------------------------------------------------|  
+
+## Part 2/4
+Seconds part of the head data, here is the custom colour palette defined.
+It seem to be 16 different 'pot' possible to be 'filled' with a colour.
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v00I || color component 1 | 2 | 3 assn. To Index 'pot' 00 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v01I || color component 1 | 2 | 3 assn. To Index 'pot' 01 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v02I || color component 1 | 2 | 3 assn. To Index 'pot' 02 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v03I || color component 1 | 2 | 3 assn. To Index 'pot' 03 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v04I || color component 1 | 2 | 3 assn. To Index 'pot' 04 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v05I || color component 1 | 2 | 3 assn. To Index 'pot' 05 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v06I || color component 1 | 2 | 3 assn. To Index 'pot' 06 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v07I || color component 1 | 2 | 3 assn. To Index 'pot' 07 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v08I || color component 1 | 2 | 3 assn. To Index 'pot' 08 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v09I || color component 1 | 2 | 3 assn. To Index 'pot' 09 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v10I || color component 1 | 2 | 3 assn. To Index 'pot' 10 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v11I || color component 1 | 2 | 3 assn. To Index 'pot' 11 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v12I || color component 1 | 2 | 3 assn. To Index 'pot' 12 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v13I || color component 1 | 2 | 3 assn. To Index 'pot' 13 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v14I || color component 1 | 2 | 3 assn. To Index 'pot' 14 |
+|----------+----------+----------+----------++---------------------------------------------------|
+| ESC*v99A | ESC*v04B | ESC*v04C | ESC*v15I || color component 1 | 2 | 3 assn. To Index 'pot' 15 |
+|----------+----------+----------+----------++---------------------------------------------------|
+
+## Part 3/4 is the actual binary pixel data
+(Note: According to documentation by HP there actually should be just 2 lines *b128V followed by 1 line *b128W.
+But the weird colour mode *r4U I was not able to find there, too ;-)  )
+|-----------+--------------------++----------------------------++-------------------|
+| ESC*b128V | {128byte BIN data} || 128 byte data for colour 1 ||                   |
+|-----------+--------------------++----------------------------++                   |
+| ESC*b128V | {128byte BIN data} || 128 byte data for colour 2 ||                   |
+|-----------+--------------------++----------------------------++   raster row 1    |
+| ESC*b128V | {128byte BIN data} || 128 byte data for colour 3 ||                   |
+|-----------+--------------------++----------------------------++                   |
+| ESC*b128W | {128byte BIN data} || 128 byte data for [known?] ||                   |
+|-----------+--------------------++----------------------------++-------------------|
+| ESC*b128V | {128byte BIN data} || 128 byte data for colour 1 ||                   |
+|-----------+--------------------++----------------------------++                   |
+| ESC*b128V | {128byte BIN data} || 128 byte data for colour 2 ||                   |
+|-----------+--------------------++----------------------------++   raster row 2    |
+| ESC*b128V | {128byte BIN data} || 128 byte data for colour 3 ||                   |
+|-----------+--------------------++----------------------------++                   |
+| ESC*b128W | {128byte BIN data} || 128 byte data for [known?] ||                   |
+|-----------+--------------------++----------------------------++-------------------|
+| ESC*b128V | {128byte BIN data} || 128 byte data for colour 1 ||                   |
+|-----------+--------------------++----------------------------++                   |
+| ESC*b128V | {128byte BIN data} || 128 byte data for colour 2 ||                   |
+|-----------+--------------------++----------------------------++   raster row n    |
+| ESC*b128V | {128byte BIN data} || 128 byte data for colour 3 ||                   |
+|-----------+--------------------++----------------------------++                   |
+| ESC*b128W | {128byte BIN data} || 128 byte data for [known?] ||                   |
+|-----------+--------------------++----------------------------++-------------------|
+
+## Part 4/4
+The terminating footer
+|------------------------+------------------------------------|
+| ESC*rB<NL><NL><NL><NL> | end command for raster graphic mode|
+===============================================================
