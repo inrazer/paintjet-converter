@@ -2,6 +2,9 @@
 Primarily designed for converting PaintJet Color PCL-data from 80's Rohde &amp; Schwarz spectrum analysers
 or other devices outputting this format of data.
 
+Note: Script was designed to run with Python 2.7, review for Python 3 following.
+I have kind a linking for old tech ;-)
+
 ## Why ?
 
 Getting screenshots from 80's metrology equipment is not always as easy as plugging in a USB storage or
