@@ -11,8 +11,20 @@ predefined number of pixels.
 Taking a look at the actual PCL-data, I were able to capture from serial to file with another
 python script paired with a parallel-to-serial converting arduino, we will see how PCL is build up.
 
+Source: PCLViewer (https://www.pclviewer.com/de/resources/reference/index.html) and
+Offical PCL Documentation by HP (http://www.maths.usyd.edu.au/u/psz/ps.html#PJLref)
+
 ## Part 1/4
 First part of the head data
+
+Possible colour planes modes
+
+ESC*r1U  - single plane palette
+ESC*r3U  - 3-planes RGB
+ESC*r-3U - 3-planes CYM
+ESC*r-4U - 4-planes CYMK
+ESC*r#U  - Unknown palette (#)
+
 ----------------------------------------------------------------------------  
 | ESC&a900H  | position coursor at hor. pos. of 900 Decapionts             |  
 |------------+-------------------------------------------------------------|  
