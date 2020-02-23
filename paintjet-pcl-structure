@@ -14,16 +14,16 @@ python script paired with a parallel-to-serial converting arduino, we will see h
 ## Part 1/4
 First part of the head data
 ----------------------------------------------------------------------------  
-| ESC&a900H | position coursor at hor. pos. of 900 Decapionts              |  
-|-----------+--------------------------------------------------------------|  
-| ESC*t180R | graph. resoluton shall be 180 dpi                            |  
-|-----------+--------------------------------------------------------------|  
-| ESC*r3U   | the used colour palette (we're interesed in)                 |  
-|-----------+--------------------------------------------------------------|  
-| ESC*r1A   | begin raster lines at actual position (left raster border)   |  
-|-----------+--------------------------------------------------------------|  
+| ESC&a900H  | position coursor at hor. pos. of 900 Decapionts             |  
+|------------+-------------------------------------------------------------|  
+| ESC*t180R  | graph. resoluton shall be 180 dpi                           |  
+|------------+-------------------------------------------------------------|  
+| ESC*r3U    | the used colour palette (we're interested in)               |  
+|------------+-------------------------------------------------------------|  
+| ESC*r1A    | begin raster lines at actual position (left raster border)  |  
+|------------+-------------------------------------------------------------|  
 | ESC*r1024S | raster width shall be 1024px [every line shall have 1024px] |  
-|-----------+--------------------------------------------------------------|  
+|------------+-------------------------------------------------------------|  
 
 ## Part 2/4
 Seconds part of the head data, here is the custom colour palette defined.
